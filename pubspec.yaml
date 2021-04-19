@@ -1,0 +1,125 @@
+name: worldnews
+description: it is a news app , it is built using flutter , news api, bloc pattern,and repository.
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.0
+  provider:
+  shared_preferences:
+  bubble_bottom_bar:
+  chopper:
+  flutter_bloc:
+  intl:
+  cached_network_image:
+  url_launcher:
+  share:
+  firebase_core:
+  firebase_auth:
+  cloud_firestore:
+  modal_progress_hud:
+  uuid:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons:
+  build_runner:
+  chopper_generator:
+
+flutter_icons:
+    image_path: "assets/images/iconnewsapp.png"
+    android: true
+    ios: true
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/iconnewsapp.png
+    - assets/images/newssplashscreen.jpg
+    - assets/images/location.png
+    - assets/images/argentina.png
+    - assets/images/australia.png
+    - assets/images/brazil.png
+    - assets/images/canada.png
+    - assets/images/china.png
+    - assets/images/egypt.png
+    - assets/images/france.png
+    - assets/images/germany.png
+    - assets/images/india.png
+    - assets/images/italy.png
+    - assets/images/japan.png
+    - assets/images/morocco.png
+    - assets/images/russia.png
+    - assets/images/saudiarabia.png
+    - assets/images/southafrica.png
+    - assets/images/southkorea.png
+    - assets/images/turkey.png
+    - assets/images/unitedstates.png
+    - assets/images/settings.png
+    - assets/images/home.png
+    - assets/images/favorites.png
+    - assets/images/categories.png
+    - assets/images/emptysearch.png
+    - assets/images/health.jpg
+    - assets/images/business.jpg
+    - assets/images/science.jpg
+    - assets/images/sports.jpg
+    - assets/images/technology.jpeg
+    - assets/images/entertainment.jpg
+    - assets/images/register.png
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware.
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  fonts:
+    - family: B612
+      fonts:
+        - asset: assets/fonts/B612-Regular.ttf
+    - family: JosefinSans
+      fonts:
+        - asset: assets/fonts/JosefinSans-Bold.ttf
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages
