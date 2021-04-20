@@ -45,6 +45,14 @@ class FirebaseBloc extends Bloc<FirebaseEvents, FirebaseStates> {
       }catch(e){
         yield LoadingErrorState();
       }
+    }else if(event is FetchUserData){
+      yield LoadingState();
+      try{
+        final data = repositoryModel.getSpecialData(userModel);
+        yield LoadedState(response: data);
+      }catch(e){
+        yield LoadingErrorState();
+      }
     }
   }
 }

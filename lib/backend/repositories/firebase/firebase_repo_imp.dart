@@ -41,8 +41,10 @@ class FirebaseRepoImplement extends RepositoryModel {
 
   @override
   getSpecialData(model) {
-    // TODO: implement getSpecialData
-    throw UnimplementedError();
+    String userId = FirebaseAuth.instance.currentUser.uid;
+    FirebaseFirestore store = FirebaseFirestore.instance;
+    DocumentReference docRef = store.collection("Users").doc(userId);
+    return docRef.snapshots();
   }
 
   @override

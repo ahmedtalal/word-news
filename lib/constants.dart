@@ -41,6 +41,7 @@ class Constants {
 
   static final String empty = "assets/images/emptysearch.png";
   static final String registerImage = "assets/images/register.png";
+  static final String userImage = "assets/images/user.png";
 
   static String getPrefCountry(String countryName) {
     String country;

@@ -5,6 +5,7 @@ import 'package:worldnews/constants.dart';
 import 'package:worldnews/pages/authentication/register.dart';
 import 'package:worldnews/pages/choose_country.dart';
 import 'package:worldnews/pages/contact_us.dart';
+import 'package:worldnews/pages/my_profile.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -40,7 +41,13 @@ class _SettingsState extends State<Settings> {
                   children: [
                     SettingView(
                       title: "MyProfile",
-                      onClick: () {},
+                      onClick: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (c) => MyProfile(),
+                          ),
+                        );
+                      },
                     ),
                     SizedBox(
                       height: height * 0.02,
