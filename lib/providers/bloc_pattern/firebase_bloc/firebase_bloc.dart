@@ -30,12 +30,20 @@ class FirebaseBloc extends Bloc<FirebaseEvents, FirebaseStates> {
       }catch(e){
         yield AuthErrorState();
       }
-    }else if(event is FavoriteEvent){
+    }else if(event is AddFavoriteEvent){
       try{
         response = repositoryModel.addData(userModel);
         yield AuthCheckedState();
       }catch(e){
         yield AuthErrorState();
+      }
+    }else if(event is FetchFavoriteItem){
+      yield LoadingState();
+      try{
+        final data = repositoryModel.getAllData(userModel);
+        yield LoadedState(response: data);
+      }catch(e){
+        yield LoadingErrorState();
       }
     }
   }

@@ -1,8 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:worldnews/components/action_widget.dart';
 import 'package:worldnews/constants.dart';
 import 'package:worldnews/pages/authentication/register.dart';
+import 'package:worldnews/providers/bloc_pattern/firebase_bloc/firebase_bloc.dart';
+import 'package:worldnews/providers/bloc_pattern/firebase_bloc/firebase_events.dart';
+import 'package:worldnews/providers/bloc_pattern/firebase_bloc/firebase_states.dart';
 
 // ignore: must_be_immutable
 class NewsDetails extends StatefulWidget {
@@ -17,6 +22,9 @@ class _NewsDetailsState extends State<NewsDetails> {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
+    var provider = BlocProvider.of<FirebaseBloc>(context);
+    provider.add(FetchFavoriteItem());
+
     return Scaffold(
       body: SafeArea(
         top: false,
@@ -47,58 +55,7 @@ class _NewsDetailsState extends State<NewsDetails> {
                       SizedBox(
                         width: 8.0,
                       ),
-                      ActionWidget(
-                        onClick: () {
-                          if (FirebaseAuth.instance.currentUser != null) {
-                            // your favorite code here
-                            print("true");
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text("Authentication Error"),
-                                  content: Text(
-                                    "you must register before add favorite item",
-                                    style: TextStyle(
-                                      fontFamily: Constants.appFont2,
-                                    ),
-                                  ),
-                                  actions: [
-                                    ElevatedButton(
-                                      child: Text(
-                                        "Cancel",
-                                        style: TextStyle(
-                                          fontFamily: Constants.appFont2,
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ElevatedButton(
-                                      child: Text(
-                                        "Register",
-                                        style: TextStyle(
-                                          fontFamily: Constants.appFont2,
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(
-                                            builder: (C) => Register(),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-                        },
-                        icon: Icons.favorite_border,
-                      ),
+                      _validateFavorite(provider),
                     ],
                   ),
                 ],
@@ -257,6 +214,94 @@ class _NewsDetailsState extends State<NewsDetails> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _validateFavorite(provider) {
+    return BlocBuilder<FirebaseBloc, FirebaseStates>(
+      builder: (context, state) {
+        bool result;
+        var response;
+        if (state is LoadingErrorState) {
+          result = false;
+        } else if (state is LoadedState) {
+          result = true;
+          response = state.response;
+        }
+        return StreamBuilder<QuerySnapshot>(
+          stream: response,
+          builder: (context, snapshot) {
+            bool res = false;
+            if (result == false) {
+              res = false;
+            } else {
+              snapshot.data.docs.forEach((element) {
+                if (element.data()["title"] == widget.newsModel["title"]) {
+                  res = true;
+                  return;
+                }
+              });
+            }
+            return ActionWidget(
+              onClick: () {
+                if (FirebaseAuth.instance.currentUser != null) {
+                  // your favorite code here
+                  provider.add(AddFavoriteEvent());
+                  if (provider.response == true) {
+                    print("true");
+                  } else {
+                    print("false");
+                  }
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text("Authentication Error"),
+                        content: Text(
+                          "you must register before add favorite item",
+                          style: TextStyle(
+                            fontFamily: Constants.appFont2,
+                          ),
+                        ),
+                        actions: [
+                          ElevatedButton(
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(
+                                fontFamily: Constants.appFont2,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ElevatedButton(
+                            child: Text(
+                              "Register",
+                              style: TextStyle(
+                                fontFamily: Constants.appFont2,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (C) => Register(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
+              icon: res == false ? Icons.favorite_border : Icons.favorite,
+            );
+          },
+        );
+      },
     );
   }
 }
