@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uuid/uuid.dart';
 import 'package:worldnews/components/action_widget.dart';
 import 'package:worldnews/constants.dart';
+import 'package:worldnews/models/news_model.dart';
 import 'package:worldnews/pages/authentication/register.dart';
 import 'package:worldnews/providers/bloc_pattern/firebase_bloc/firebase_bloc.dart';
 import 'package:worldnews/providers/bloc_pattern/firebase_bloc/firebase_events.dart';
@@ -19,11 +21,18 @@ class NewsDetails extends StatefulWidget {
 }
 
 class _NewsDetailsState extends State<NewsDetails> {
+  int numOfFavorites = 0;
+  String itemId;
+  bool result = false;
+  int itemViews;
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var provider = BlocProvider.of<FirebaseBloc>(context);
     provider.add(FetchFavoriteItem());
+    provider.newsModel = itemId;
+    provider.add(FetchItemViews());
 
     return Scaffold(
       body: SafeArea(
@@ -106,14 +115,57 @@ class _NewsDetailsState extends State<NewsDetails> {
                                 SizedBox(
                                   width: 2.0,
                                 ),
-                                Text(
-                                  "41.5K",
-                                  style: TextStyle(
-                                    fontSize: 10.0,
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: Constants.appFont2,
-                                  ),
+                                BlocBuilder<FirebaseBloc, FirebaseStates>(
+                                  builder: (context, state) {
+                                    var response;
+                                    if (state is LoadingState) {
+                                      result = false;
+                                    } else if (state is LoadedState) {
+                                      result = true;
+                                      response = state.response;
+                                    } else if (state is LoadingErrorState) {
+                                      result = false;
+                                    }
+                                    return StreamBuilder<DocumentSnapshot>(
+                                      stream: response,
+                                      builder: (context, snapshot) {
+                                        if (result == false) {
+                                          return Text(
+                                            "0",
+                                            style: TextStyle(
+                                              fontSize: 10.0,
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: Constants.appFont2,
+                                            ),
+                                          );
+                                        }
+                                        if (!snapshot.hasData) {
+                                          result = false;
+                                          return Text(
+                                            "0",
+                                            style: TextStyle(
+                                              fontSize: 10.0,
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: Constants.appFont2,
+                                            ),
+                                          );
+                                        } else {
+                                          itemViews = snapshot.data["num"];
+                                          return Text(
+                                            "$itemViews",
+                                            style: TextStyle(
+                                              fontSize: 10.0,
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: Constants.appFont2,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    );
+                                  },
                                 ),
                               ],
                             ),
@@ -130,7 +182,7 @@ class _NewsDetailsState extends State<NewsDetails> {
                                   width: 2.0,
                                 ),
                                 Text(
-                                  "700",
+                                  "$numOfFavorites",
                                   style: TextStyle(
                                     fontSize: 10.0,
                                     color: Colors.grey,
@@ -177,6 +229,20 @@ class _NewsDetailsState extends State<NewsDetails> {
                         ),
                         InkWell(
                           onTap: () {
+                            if (result == false) {
+                              setState(() {
+                                provider.newsModel = itemId;
+                                provider.add(SetItemView());
+                              });
+                            } else {
+                              setState(() {
+                                provider.newsModel = {
+                                  "num": itemViews,
+                                  "id": itemId,
+                                };
+                                provider.add(UpdateItemViews());
+                              });
+                            }
                             String url = widget.newsModel["url"].toString();
                             Constants.launchUrl(url);
                           },
@@ -217,7 +283,7 @@ class _NewsDetailsState extends State<NewsDetails> {
     );
   }
 
-  Widget _validateFavorite(provider) {
+  Widget _validateFavorite(FirebaseBloc provider) {
     return BlocBuilder<FirebaseBloc, FirebaseStates>(
       builder: (context, state) {
         bool result;
@@ -235,8 +301,10 @@ class _NewsDetailsState extends State<NewsDetails> {
             if (result == false) {
               res = false;
             } else {
+              numOfFavorites = snapshot.data.size;
               snapshot.data.docs.forEach((element) {
                 if (element.data()["title"] == widget.newsModel["title"]) {
+                  itemId = element.data()["id"];
                   res = true;
                   return;
                 }
@@ -246,11 +314,23 @@ class _NewsDetailsState extends State<NewsDetails> {
               onClick: () {
                 if (FirebaseAuth.instance.currentUser != null) {
                   // your favorite code here
-                  provider.add(AddFavoriteEvent());
-                  if (provider.response == true) {
-                    print("true");
+                  if (res == true) {
+                    provider.newsModel = itemId;
+                    provider.add(DeleteFavoriteItem());
                   } else {
-                    print("false");
+                    var uId = Uuid();
+                    String id = uId.v1();
+                    NewsModel model = NewsModel(
+                      id: id,
+                      name: widget.newsModel["name"],
+                      title: widget.newsModel["title"],
+                      description: widget.newsModel["description"],
+                      articleUrl: widget.newsModel["articleUrl"],
+                      imageUrl: widget.newsModel["imageUrl"],
+                      publishTime: widget.newsModel["publishTime"],
+                    );
+                    provider.newsModel = model;
+                    provider.add(AddFavoriteEvent());
                   }
                 } else {
                   showDialog(

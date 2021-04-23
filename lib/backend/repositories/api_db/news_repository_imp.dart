@@ -8,7 +8,6 @@ class NewsRepoImplement extends RepositoryModel {
 
   @override
   deleteData(model) {
-    // TODO: implement deleteData
     throw UnimplementedError();
   }
 
@@ -28,18 +27,16 @@ class NewsRepoImplement extends RepositoryModel {
       model.category,
       _apiKey,
     );
-    return response ;
+    return response;
   }
 
   @override
   updateData(model) {
-    // TODO: implement updateData
     throw UnimplementedError();
   }
 
   @override
   addData(model) {
-    // TODO: implement addData
     throw UnimplementedError();
   }
 }

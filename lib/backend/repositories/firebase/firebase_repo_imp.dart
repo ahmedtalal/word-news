@@ -1,23 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:worldnews/backend/repositories/repository_model.dart';
+import 'package:worldnews/models/news_model.dart';
 import 'package:worldnews/models/user_model.dart';
 import 'package:uuid/uuid.dart';
 
 class FirebaseRepoImplement extends RepositoryModel {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-
   @override
   addData(model) async {
     bool result = false;
     var uId = Uuid();
-    Map<String,dynamic> data = UserModel.toJson(model);
+    Map<String, dynamic> data = NewsModel.toJson(model);
     String userId = FirebaseAuth.instance.currentUser.uid;
     FirebaseFirestore store = FirebaseFirestore.instance;
     CollectionReference collRef = store.collection("Favorites");
     DocumentReference docRef =
-    collRef.doc(userId).collection("items").doc(uId.v1());
+        collRef.doc(userId).collection("items").doc(model.id);
     await docRef.set(data).whenComplete(() {
       result = true;
     }).catchError((onError) => print(onError));
@@ -26,17 +26,25 @@ class FirebaseRepoImplement extends RepositoryModel {
 
   @override
   deleteData(model) {
-    // TODO: implement deleteData
-    throw UnimplementedError();
+    bool result = false;
+    String userId = FirebaseAuth.instance.currentUser.uid;
+    FirebaseFirestore store = FirebaseFirestore.instance;
+    CollectionReference collRef = store.collection("Favorites");
+    DocumentReference docRef =
+        collRef.doc(userId).collection("items").doc(model);
+    docRef.delete().whenComplete(() {
+      result = true;
+    });
+    return result;
   }
 
   @override
   getAllData(model) {
     String userId = FirebaseAuth.instance.currentUser.uid;
     FirebaseFirestore store = FirebaseFirestore.instance;
-    CollectionReference collRef = store.collection("Favorites").doc(userId).collection("items");
+    CollectionReference collRef =
+        store.collection("Favorites").doc(userId).collection("items");
     return collRef.snapshots();
-
   }
 
   @override
@@ -49,8 +57,17 @@ class FirebaseRepoImplement extends RepositoryModel {
 
   @override
   updateData(model) {
-    // TODO: implement updateData
-    throw UnimplementedError();
+    bool result = false;
+    Map<String, dynamic> data = {
+      "num": model["num"]++,
+    };
+    FirebaseFirestore store = FirebaseFirestore.instance;
+    CollectionReference collRef = store.collection("itemViews");
+    DocumentReference docRef = collRef.doc(model["id"]);
+    docRef.update(data).whenComplete((){
+      result = true ;
+    });
+    return result ;
   }
 
   Future<bool> register(UserModel userModel) async {
@@ -91,5 +108,24 @@ class FirebaseRepoImplement extends RepositoryModel {
     return result;
   }
 
+  Future<bool> setNumOfViews(var id) async {
+    bool result = false;
+    Map<String, dynamic> data = {
+      "num": 1,
+    };
+    FirebaseFirestore store = FirebaseFirestore.instance;
+    CollectionReference collRef = store.collection("itemViews");
+    DocumentReference docRef = collRef.doc(id);
+    await docRef.set(data).whenComplete(() {
+      result = true;
+    });
+    return result;
+  }
 
+  getItemViews(var id) {
+    String userId = FirebaseAuth.instance.currentUser.uid;
+    FirebaseFirestore store = FirebaseFirestore.instance;
+    DocumentReference docRef = store.collection("itemViews").doc(id);
+    return docRef.snapshots();
+  }
 }

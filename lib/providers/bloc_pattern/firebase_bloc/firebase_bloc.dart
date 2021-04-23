@@ -1,3 +1,4 @@
+import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:worldnews/backend/repositories/firebase/firebase_repo_imp.dart';
@@ -8,6 +9,7 @@ import 'package:worldnews/providers/bloc_pattern/firebase_bloc/firebase_states.d
 
 class FirebaseBloc extends Bloc<FirebaseEvents, FirebaseStates> {
   UserModel userModel;
+  var newsModel ;
   RepositoryModel repositoryModel;
   var response ;
   FirebaseBloc({
@@ -32,7 +34,7 @@ class FirebaseBloc extends Bloc<FirebaseEvents, FirebaseStates> {
       }
     }else if(event is AddFavoriteEvent){
       try{
-        response = repositoryModel.addData(userModel);
+        response = repositoryModel.addData(newsModel);
         yield AuthCheckedState();
       }catch(e){
         yield AuthErrorState();
@@ -52,6 +54,33 @@ class FirebaseBloc extends Bloc<FirebaseEvents, FirebaseStates> {
         yield LoadedState(response: data);
       }catch(e){
         yield LoadingErrorState();
+      }
+    }else if(event is DeleteFavoriteItem){
+      try{
+        response = repositoryModel.deleteData(newsModel);
+        yield AuthCheckedState();
+      }catch(e){
+        yield AuthErrorState();
+      }
+    }else if(event is SetItemView) {
+      try{
+        response = (repositoryModel as FirebaseRepoImplement).setNumOfViews(newsModel);
+      }catch(e){
+        yield AuthErrorState();
+      }
+    }else if(event is FetchItemViews){
+      yield LoadingState();
+      try{
+        final data = (repositoryModel as FirebaseRepoImplement).getItemViews(newsModel);
+        yield LoadedState(response: data);
+      }catch(e){
+        yield LoadingErrorState();
+      }
+    }else if(event is UpdateItemViews){
+      try{
+        repositoryModel.updateData(newsModel);
+      }catch(e){
+        yield AuthErrorState();
       }
     }
   }

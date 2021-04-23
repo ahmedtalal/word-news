@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class NewsModel {
-  String title, description, articleUrl, imageUrl, publishTime, name;
+  String id ,title, description, articleUrl, imageUrl, publishTime, name;
   NewsModel({
+    @required this.id,
     @required this.name,
     @required this.title,
     @required this.description,
@@ -12,6 +13,7 @@ class NewsModel {
   });
 
   NewsModel.fromJson(Map<String,dynamic> json){
+    this.id = json["id"];
     this.name = json["name"];
     this.title = json["title"];
     this.description = json["description"];
@@ -21,6 +23,7 @@ class NewsModel {
   }
 
   static Map<String,dynamic> toJson(NewsModel model)=>{
+    "id":model.id,
     "name":model.name,
     "title":model.title,
     "description":model.description,

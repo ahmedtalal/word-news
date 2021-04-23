@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:worldnews/components/action_widget.dart';
@@ -95,7 +96,9 @@ class MyProfile extends StatelessWidget {
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                result == false?"User Name":snapshot.data["name"],
+                                result == false
+                                    ? "User Name"
+                                    : snapshot.data["name"],
                                 style: TextStyle(
                                   fontSize: 15.0,
                                   fontFamily: Constants.appFont2,
@@ -121,7 +124,9 @@ class MyProfile extends StatelessWidget {
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                result == false?"Email":snapshot.data["email"],
+                                result == false
+                                    ? "Email"
+                                    : snapshot.data["email"],
                                 style: TextStyle(
                                   fontSize: 15.0,
                                   fontFamily: Constants.appFont2,
@@ -140,7 +145,10 @@ class MyProfile extends StatelessWidget {
               ),
               Center(
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    FirebaseAuth.instance.signOut();
+                    Navigator.of(context).pop();
+                  },
                   child: Container(
                     width: width * 0.4,
                     height: height * 0.06,
