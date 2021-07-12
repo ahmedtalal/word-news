@@ -64,10 +64,10 @@ class FirebaseRepoImplement extends RepositoryModel {
     FirebaseFirestore store = FirebaseFirestore.instance;
     CollectionReference collRef = store.collection("itemViews");
     DocumentReference docRef = collRef.doc(model["id"]);
-    docRef.update(data).whenComplete((){
-      result = true ;
+    docRef.update(data).whenComplete(() {
+      result = true;
     });
-    return result ;
+    return result;
   }
 
   Future<bool> register(UserModel userModel) async {
@@ -75,7 +75,8 @@ class FirebaseRepoImplement extends RepositoryModel {
     UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: userModel.email, password: userModel.password);
     if (credential != null) {
-      result = await _insertUser(userModel);
+      var model = UserModel.object(id: userModel.id, name: userModel.name, email: userModel.email);
+      result = await _insertUser(model);
     } else {
       result = false;
     }
@@ -127,5 +128,16 @@ class FirebaseRepoImplement extends RepositoryModel {
     FirebaseFirestore store = FirebaseFirestore.instance;
     DocumentReference docRef = store.collection("itemViews").doc(id);
     return docRef.snapshots();
+  }
+
+  checkCurrentUser() {
+    bool result = false;
+    User user = _auth.currentUser;
+    if (user != null) {
+      result = true;
+    } else {
+      result = false;
+    }
+    return result;
   }
 }

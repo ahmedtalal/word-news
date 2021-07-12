@@ -29,6 +29,7 @@ class _TopHeadLinesState extends State<TopHeadLines> {
     _newsBloc.model = Constants.getPrefCountry(provider.country);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         child: Padding(

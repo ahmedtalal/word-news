@@ -8,6 +8,7 @@ class ContactUs extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         child: Padding(

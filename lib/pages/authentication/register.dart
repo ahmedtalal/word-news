@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:uuid/uuid.dart';
 import 'package:worldnews/components/action_widget.dart';
 import 'package:worldnews/constants.dart';
 import 'package:worldnews/models/user_model.dart';
@@ -9,6 +10,7 @@ import 'package:worldnews/pages/authentication/login.dart';
 import 'package:worldnews/pages/home.dart';
 import 'package:worldnews/providers/bloc_pattern/firebase_bloc/firebase_bloc.dart';
 import 'package:worldnews/providers/bloc_pattern/firebase_bloc/firebase_events.dart';
+import 'package:worldnews/providers/bloc_pattern/firebase_bloc/firebase_states.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -211,30 +213,62 @@ class _RegisterState extends State<Register> {
                         height: height * 0.03,
                       ),
                       Center(
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              isProgress = !isProgress;
-                            });
-                            _validateData(context, firebaseProvider);
-                          },
-                          child: Container(
-                            width: width * 0.72,
-                            height: height * 0.065,
-                            decoration: BoxDecoration(
-                              color: Colors.red[300],
-                              borderRadius: BorderRadius.circular(17.0),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Sign Up",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontFamily: Constants.appFont2,
-                                  color: Colors.white,
+                        child: BlocListener<FirebaseBloc, FirebaseStates>(
+                          listener: (context, state) {
+                            if (state is AuthCheckedState) {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (C) => Home(),
                                 ),
-                              ),
-                            ),
+                              );
+                            } else if (state is AuthErrorState) {
+                              scaffoldKey.currentState.showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      "there is a wrong in email or password"),
+                                ),
+                              );
+                            }
+                          },
+                          child: BlocBuilder<FirebaseBloc, FirebaseStates>(
+                            builder: (context, state) {
+                              return InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    if (formKey.currentState.validate()) {
+                                      isProgress = !isProgress;
+                                      String id = Uuid().v1();
+                                      UserModel userModel = UserModel(
+                                        name: name,
+                                        email: email,
+                                        id: id,
+                                        password: password,
+                                      );
+                                      firebaseProvider.userModel = userModel;
+                                      firebaseProvider.add(RegisterEvents());
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  width: width * 0.72,
+                                  height: height * 0.065,
+                                  decoration: BoxDecoration(
+                                    color: Colors.red[300],
+                                    borderRadius: BorderRadius.circular(17.0),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      "Sign Up",
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontFamily: Constants.appFont2,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -284,31 +318,5 @@ class _RegisterState extends State<Register> {
   }
 
   // this method is used to validate data
-  void _validateData(BuildContext context, FirebaseBloc firebaseProvider) {
-    String id = FirebaseAuth.instance.currentUser.uid;
-    UserModel userModel = UserModel(
-      name: name,
-      email: email,
-      id: id,
-      password: password,
-    );
-    if (formKey.currentState.validate()) {
-      firebaseProvider.userModel = userModel;
-      firebaseProvider.add(RegisterEvents());
-      if (firebaseProvider.response == true) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (c) => Home(),
-          ),
-        );
-      } else {
-        scaffoldKey.currentState.showSnackBar(
-          SnackBar(
-            content: Text("there is a wrong in email or password"),
-          ),
-        );
-      }
-    }
-  }
-
+  void _validateData(BuildContext context, FirebaseBloc firebaseProvider) {}
 }

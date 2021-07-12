@@ -13,7 +13,8 @@ class SettingView extends StatelessWidget {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     return Container(
-      height: height * 0.07,
+      height: height * 0.08,
+      padding: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.0),
         border: Border.all(

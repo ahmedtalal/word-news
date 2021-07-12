@@ -11,9 +11,9 @@ import 'package:worldnews/providers/bloc_pattern/firebase_bloc/firebase_bloc.dar
 import 'package:worldnews/providers/provider/Country_provider.dart';
 
 main() async {
-  // WidgetsFlutterBinding
-  //     .ensureInitialized(); // is used to interact with firebase engine >>
-  // await Firebase.initializeApp();
+  WidgetsFlutterBinding
+      .ensureInitialized(); // is used to interact with firebase engine >>
+  await Firebase.initializeApp();
   runApp(NewsApp());
 }
 

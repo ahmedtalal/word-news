@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:worldnews/constants.dart';
 
@@ -22,11 +23,16 @@ class NewsView extends StatelessWidget {
                 width: 90.0,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.0),
-                  image: DecorationImage(
-                    image: newsList["urlToImage"] != null ? NetworkImage(
-                      newsList["urlToImage"],
-                    ) : AssetImage(Constants.empty,),
-                    fit: BoxFit.cover,
+                ),
+                child: CachedNetworkImage(
+                  fit: BoxFit.fill,
+                  imageUrl: newsList["urlToImage"],
+                  placeholder: (context, url) =>
+                      Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) => Image(
+                    image: AssetImage(
+                      Constants.empty,
+                    ),
                   ),
                 ),
               ),
@@ -39,11 +45,11 @@ class NewsView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(right:5.0),
+                      padding: const EdgeInsets.only(right: 8.0),
                       child: Text(
                         newsList["title"],
                         style: TextStyle(
-                          fontSize: 15.0,
+                          fontSize: 13.0,
                           fontFamily: Constants.appFont2,
                         ),
                       ),

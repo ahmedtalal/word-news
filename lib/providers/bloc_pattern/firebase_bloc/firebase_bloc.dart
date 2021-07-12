@@ -20,7 +20,7 @@ class FirebaseBloc extends Bloc<FirebaseEvents, FirebaseStates> {
   Stream<FirebaseStates> mapEventToState(FirebaseEvents event) async*{
     if(event is RegisterEvents){
       try{
-        response = (repositoryModel as FirebaseRepoImplement).register(userModel);
+        response = await (repositoryModel as FirebaseRepoImplement).register(userModel);
         yield AuthCheckedState();
       }catch(e){
         yield AuthErrorState();
@@ -69,12 +69,12 @@ class FirebaseBloc extends Bloc<FirebaseEvents, FirebaseStates> {
         yield AuthErrorState();
       }
     }else if(event is FetchItemViews){
-      yield LoadingState();
+      yield LoadingViewsState();
       try{
         final data = (repositoryModel as FirebaseRepoImplement).getItemViews(newsModel);
-        yield LoadedState(response: data);
+        yield LoadedViewsState(response: data);
       }catch(e){
-        yield LoadingErrorState();
+        yield LoadingViewsErrorState();
       }
     }else if(event is UpdateItemViews){
       try{

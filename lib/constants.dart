@@ -107,7 +107,7 @@ class Constants {
   static void shared(String url, String message, BuildContext context) {
     final RenderBox box = context.findRenderObject();
     Share.share(
-      "${message + url}",
+      "${message + "the app link on google play : " + url}",
       sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
     );
   }

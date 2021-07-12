@@ -23,5 +23,14 @@ class LoadedState extends FirebaseStates{
   LoadedState({@required this.response});
 }
 
+class LoadingViewsState extends FirebaseStates{}
+
+class LoadingViewsErrorState extends FirebaseStates{}
+
+class LoadedViewsState extends FirebaseStates{
+  final dynamic response ;
+  LoadedViewsState({@required this.response});
+}
+
 
 

@@ -8,6 +8,11 @@ class UserModel {
     @required this.id,
     @required this.password,
   });
+  UserModel.object({
+    @required this.id,
+    @required this.name,
+    @required this.email,
+  });
   UserModel.loginModel({
     @required this.email,
     @required this.password,

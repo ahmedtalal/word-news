@@ -15,6 +15,7 @@ class _CategoriesState extends State<Categories> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         child: Padding(

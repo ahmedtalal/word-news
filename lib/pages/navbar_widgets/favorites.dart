@@ -22,6 +22,7 @@ class _FavoritesState extends State<Favorites> {
     blocProvider.add(FetchFavoriteItem());
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         child: Padding(

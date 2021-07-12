@@ -41,6 +41,7 @@ class _NewsCategoryDetailsState extends State<NewsCategoryDetails> {
     categoryProvider.categoryModel= parameterModel;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         child: Padding(

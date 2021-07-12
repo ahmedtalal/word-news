@@ -19,6 +19,7 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         child: Padding(
@@ -39,18 +40,18 @@ class _SettingsState extends State<Settings> {
               Expanded(
                 child: ListView(
                   children: [
-                    SettingView(
-                      title: "MyProfile",
-                      onClick: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (c) => MyProfile(),
-                          ),
-                        );
-                      },
-                    ),
+                    // SettingView(
+                    //   title: "MyProfile",
+                    //   onClick: () {
+                    //     Navigator.of(context).push(
+                    //       MaterialPageRoute(
+                    //         builder: (c) => MyProfile(),
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
                     SizedBox(
-                      height: height * 0.02,
+                      height: height * 0.03,
                     ),
                     SettingView(
                       title: "ShareApp",
@@ -69,7 +70,7 @@ class _SettingsState extends State<Settings> {
                       },
                     ),
                     SizedBox(
-                      height: height * 0.02,
+                      height: height * 0.03,
                     ),
                     SettingView(
                       title: "Contact Us",
@@ -95,18 +96,18 @@ class _SettingsState extends State<Settings> {
                       },
                     ),
                     SizedBox(
-                      height: height * 0.02,
+                      height: height * 0.03,
                     ),
-                    SettingView(
-                      title: "Sign Up",
-                      onClick: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (C) => Register(),
-                          ),
-                        );
-                      },
-                    ),
+                    // SettingView(
+                    //   title: "Sign Up",
+                    //   onClick: () {
+                    //     Navigator.of(context).pushReplacement(
+                    //       MaterialPageRoute(
+                    //         builder: (C) => Register(),
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
                     SizedBox(
                       height: height * 0.03,
                     ),

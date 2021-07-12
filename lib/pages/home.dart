@@ -28,7 +28,6 @@ class _HomeState extends State<Home> {
   List<Widget> pages = [
     TopHeadLines(),
     Categories(),
-    Favorites(),
     Settings(),
   ];
   @override
@@ -87,26 +86,26 @@ class _HomeState extends State<Home> {
             ),
           ),
           // favorites
-          BubbleBottomBarItem(
-            title: Text(
-              "Favorites",
-              style: TextStyle(
-                fontFamily: Constants.appFont2,
-                fontSize: 12.0,
-              ),
-            ),
-            backgroundColor: Colors.indigo[300],
-            icon: Image.asset(
-              Constants.favoritesPage,
-              height: 18.0,
-              color: Colors.blueGrey[600],
-            ),
-            activeIcon: Image.asset(
-              Constants.favoritesPage,
-              height: 18.0,
-              color: Colors.indigo,
-            ),
-          ),
+          // BubbleBottomBarItem(
+          //   title: Text(
+          //     "Favorites",
+          //     style: TextStyle(
+          //       fontFamily: Constants.appFont2,
+          //       fontSize: 12.0,
+          //     ),
+          //   ),
+          //   backgroundColor: Colors.indigo[300],
+          //   icon: Image.asset(
+          //     Constants.favoritesPage,
+          //     height: 18.0,
+          //     color: Colors.blueGrey[600],
+          //   ),
+          //   activeIcon: Image.asset(
+          //     Constants.favoritesPage,
+          //     height: 18.0,
+          //     color: Colors.indigo,
+          //   ),
+          // ),
           // settings
           BubbleBottomBarItem(
             title: Text(

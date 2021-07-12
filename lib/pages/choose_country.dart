@@ -50,7 +50,7 @@ class ChooseCountry extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  "Please you should identify any country that you want",
+                  "Please you should identify any country that you need",
                   style: TextStyle(
                     fontSize: 15.0,
                     fontFamily: Constants.appFont2,

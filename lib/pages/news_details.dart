@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class _NewsDetailsState extends State<NewsDetails> {
     provider.add(FetchItemViews());
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         top: false,
         child: Padding(
@@ -58,13 +60,18 @@ class _NewsDetailsState extends State<NewsDetails> {
                   Row(
                     children: [
                       ActionWidget(
-                        onClick: () {},
+                        onClick: () {
+                          final String url =
+                              "https://play.google.com/store/apps/details?id=ahmed.codedev.worldnews&referrer=utm_source%3Dgoogle";
+                          Constants.shared(
+                              url, widget.newsModel["title"], context);
+                        },
                         icon: Icons.share,
                       ),
                       SizedBox(
                         width: 8.0,
                       ),
-                      _validateFavorite(provider),
+                      //_validateFavorite(provider),
                     ],
                   ),
                 ],
@@ -74,17 +81,16 @@ class _NewsDetailsState extends State<NewsDetails> {
               ),
               Container(
                 height: height * 0.24,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.0),
-                  image: DecorationImage(
-                    image: widget.newsModel["urlToImage"] != null
-                        ? NetworkImage(
-                            widget.newsModel["urlToImage"],
-                          )
-                        : AssetImage(
-                            Constants.empty,
-                          ),
-                    fit: BoxFit.cover,
+                width: double.infinity,
+                child: CachedNetworkImage(
+                  fit: BoxFit.fill,
+                  imageUrl: widget.newsModel["urlToImage"],
+                  placeholder: (context, url) =>
+                      Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) => Image(
+                    image: AssetImage(
+                      Constants.empty,
+                    ),
                   ),
                 ),
               ),
@@ -115,57 +121,14 @@ class _NewsDetailsState extends State<NewsDetails> {
                                 SizedBox(
                                   width: 2.0,
                                 ),
-                                BlocBuilder<FirebaseBloc, FirebaseStates>(
-                                  builder: (context, state) {
-                                    var response;
-                                    if (state is LoadingState) {
-                                      result = false;
-                                    } else if (state is LoadedState) {
-                                      result = true;
-                                      response = state.response;
-                                    } else if (state is LoadingErrorState) {
-                                      result = false;
-                                    }
-                                    return StreamBuilder<DocumentSnapshot>(
-                                      stream: response,
-                                      builder: (context, snapshot) {
-                                        if (result == false) {
-                                          return Text(
-                                            "0",
-                                            style: TextStyle(
-                                              fontSize: 10.0,
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: Constants.appFont2,
-                                            ),
-                                          );
-                                        }
-                                        if (!snapshot.hasData) {
-                                          result = false;
-                                          return Text(
-                                            "0",
-                                            style: TextStyle(
-                                              fontSize: 10.0,
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: Constants.appFont2,
-                                            ),
-                                          );
-                                        } else {
-                                          itemViews = snapshot.data["num"];
-                                          return Text(
-                                            "$itemViews",
-                                            style: TextStyle(
-                                              fontSize: 10.0,
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: Constants.appFont2,
-                                            ),
-                                          );
-                                        }
-                                      },
-                                    );
-                                  },
+                                Text(
+                                  "500",
+                                  style: TextStyle(
+                                    fontSize: 10.0,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: Constants.appFont2,
+                                  ),
                                 ),
                               ],
                             ),
@@ -182,7 +145,7 @@ class _NewsDetailsState extends State<NewsDetails> {
                                   width: 2.0,
                                 ),
                                 Text(
-                                  "$numOfFavorites",
+                                  "300",
                                   style: TextStyle(
                                     fontSize: 10.0,
                                     color: Colors.grey,
@@ -204,7 +167,7 @@ class _NewsDetailsState extends State<NewsDetails> {
                       child: Text(
                         widget.newsModel["title"],
                         style: TextStyle(
-                          fontSize: 24.0,
+                          fontSize: 20.0,
                           fontFamily: Constants.appFont2,
                         ),
                       ),
@@ -269,7 +232,7 @@ class _NewsDetailsState extends State<NewsDetails> {
                         style: TextStyle(
                           fontFamily: Constants.appFont2,
                           color: Colors.grey[800],
-                          fontSize: 17.0,
+                          fontSize: 16.0,
                         ),
                       ),
                     ),
@@ -299,6 +262,8 @@ class _NewsDetailsState extends State<NewsDetails> {
           builder: (context, snapshot) {
             bool res = false;
             if (result == false) {
+              res = false;
+            } else if (!snapshot.hasData) {
               res = false;
             } else {
               numOfFavorites = snapshot.data.size;
